@@ -35,7 +35,7 @@ def main():
             case "recovery":
                 participant = generate_valid_recovery_participant_data(participant_name, duration)
             case "poor":
-                participant = generate_valid_poor_participant_data(participant_name, duration)
+                participant = generate_poor_participant_data(participant_name, duration)
                 raise QualityError(f"Quality of session data is not valid and will not be analyzed.")
             case _:
                 raise ValueError(f"Invalid Session Type: {session_type}")

@@ -1,0 +1,2 @@
+The Project submission does not require any third party packages.
+if desired there is commented out code in main to generate a table, so if they are reintroduced the user would need to run `pip install matplotlib`

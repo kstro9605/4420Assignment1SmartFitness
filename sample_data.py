@@ -43,7 +43,7 @@ def generate_valid_high_participant_data(participant_name, session_length):
 
     return participant
 
-def generate_valid_poor_participant_data(participant_name, session_length):
+def generate_poor_participant_data(participant_name, session_length):
     participant = associate_participant_observations( *generate_fitness_data(
             participant_id=participant_name,
             scenario="poor_quality",
