@@ -26,8 +26,9 @@ class Analyzer:
             session_classification = self.determine_session_type(organized_observations, baseline_hr)
             session_analysis["session_type"] = session_classification
             session.set_session_type(session_classification)
-
             session_analysis["valid_observations"] = len(organized_observations)
+
+            session_analysis["session_summary"] = self.generateSummary(session_analysis)
 
             analysis_results.append(session_analysis)   
 
@@ -57,6 +58,26 @@ class Analyzer:
             return "Resting"
         else:
             return "Insufficient Data"
+
+    def generateSummary(self, sessionAnalysis):
+        summary_string = ""
+        match sessionAnalysis["session_type"]:
+            case "Resting":
+                summary_string="Session has been categorized as a Resting Session.\n " \
+                "Activity levels and Heart rate trends if at all increasing, do not surpass an average heart rate level of 85, " \
+                "and the average heart rate of the session is also within a resonable range of participants base line values"
+            case "Moderate Activity":
+                summary_string="Upwards trends of Heart-Rate and Activity Levels alongside an average heart rate between 85 and 109 bpm " \
+                "indicate this sessions represents a period of Moderate activity."
+            case "High Activity":
+                summary_string="Consistent High values for participants activity levels as well as elevated heart rate, " \
+                "sitting above 110 bpm for the duration of the exercise. \n" \
+                "this is an indication this session recorded a period of High activity"
+            case "Recovery":
+                summary_string="Sensor data began with a period of elevated activity levels and heart rate, then over time" \
+                " These levels decreased approaching the participants base values. This indicates "
+
+        return summary_string
 
     ''' I believe this method of determining whether the median slope is increasing vs decreasing would work for Real life 
         values but unfortunately due to the random generation of values used that go up and down much more erradically than a real heart rate
@@ -125,5 +146,6 @@ class Analyzer:
             print(f"  Min Heart Rate: {session_analysis['min_heart_rate']} bpm")
             print(f"  Session Type: {session_analysis['session_type']}")
             print(f"  Sensor captured {session_analysis['valid_observations']} acceptable readings out of {session_analysis['duration']} expected")
+            print(f"\n  Session Summary: {session_analysis['session_summary']}")
     
       
