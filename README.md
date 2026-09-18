@@ -176,7 +176,7 @@ PreRequisites:
 
 ### Steps:
   1. Clone the repository:
-    - run `git clone https://github.com/kstro9605/4420Assignment1SmartFitne` in a terminal with git installed
+    - run `git clone https://github.com/kstro9605/4420Assignment1SmartFitness.git` in a terminal with git installed
   2. Enter the Project Directory
     - run `cd 4420Assignment1SmartFitness` in the same terminal window
   3. Verify Python
