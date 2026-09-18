@@ -32,7 +32,7 @@ these sets are then compiled into a *Session* Object which is then passed to an 
 4420Assignment1SmartFitness/<br>
 |-main.py<br>
 |-analyzer.py<br>
-|-data_generator.py<br>  <-Instructor provided class that can generate random seeded signal data
+|-data_generator.py <-Instructor provided class that can generate random seeded signal data <br>
 |-observation.py<br>
 |-participant.py<br>
 |-sample_data.py<br>
