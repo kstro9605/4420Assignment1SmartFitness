@@ -180,11 +180,9 @@ PreRequisites:
     - run `cd 4420Assignment1SmartFitness` in the same terminal window
   3. Verify Python
     - run `python3 --version` and verify you are running 3.10 or later
-  4. run `py -m venv .venv` 
-  5. run `.\.venv\Scripts\Activate.ps1`
-  6. run `py -m pip install -e .`
+  6. run `python3 -m pip install -e .`
   4. Run the Application
-    - run `py -m smartfitness --profiles <profile data source> --sessions <session data source> [--output <desired output directory](<- this is optional and without it it will default to output)`
+    - run `python3 -m smartfitness --profiles <profile data source> --sessions <session data source> [--output <desired output directory](<- this is optional and without it it will default to output)`
       - if You wish to overwrite all output already generated instead of appending (in the case of running the application with the same data files) append `--overwrite` to the above command
   5. View output files in either a new `output` directory or whatever directory specified in the above command
      
