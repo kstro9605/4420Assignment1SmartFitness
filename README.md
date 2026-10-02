@@ -190,7 +190,17 @@ PreRequisites:
 
 ## Example Output
 
-<img width="1523" height="526" alt="image" src="https://github.com/user-attachments/assets/4c432374-ab94-4666-a0a0-53c3bbd3de40" />
+### Valid Data output 
+
+<img width="1839" height="955" alt="image" src="https://github.com/user-attachments/assets/8301840a-7009-4d93-8965-aa4e8442fe0d" />
+
+### Invalid data source output
+
+<img width="1846" height="674" alt="image" src="https://github.com/user-attachments/assets/c6e9962d-70c1-41b7-ad41-3aa4619f9c06" />
+
+### Rejected Records output
+
+<img width="1049" height="827" alt="image" src="https://github.com/user-attachments/assets/84a6212f-76ca-4c7b-9fee-d267c9af0769" />
 
 -----------------------------------------------------------------------------------------------------------------------
 
