@@ -115,6 +115,7 @@ Responsibilities:<br>
 &emsp;Validates the rows of a participants CSV file and either passes the row or rejects it and provides explanation as to why.<br>
 &emsp;Validates the rows of a session CSV file and either passes the row or rejects it and provides explanation as to why.<br>
 &emsp;Creates two custom exception calsses to handle when a data file is invalid<br>
+
 -----------------------------------------------------------------------------------------------------------------------
 
 ### Composition
