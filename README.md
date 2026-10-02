@@ -1,4 +1,4 @@
-# Smart Fitness Session Analyzer
+# Smart Fitness Session Analyzer (Assignment 2)
 Python Programming Assignment (II) Option A
 Kyle Strother 
 Student Number: 416279
