@@ -52,7 +52,7 @@ def main():
             analysis_results = analyzer.analyze_sessions(user)
             for session_analysis in analysis_results:
                 write_analysis_to_file(args.output, session_analysis)
-                print_analysis_results(args.output, analyzer, user, analysis_results)
+                print_analysis_results(args.output, user, analysis_results)
     except (UserFileValidationError, SessionFileValidationError) as e:
         print(f"Error importing data: {e}")
 
