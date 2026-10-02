@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+src/smartfitness/__init__.py
+src/smartfitness/__main__.py
+src/smartfitness/analyzer.py
+src/smartfitness/fileGeneration.py
+src/smartfitness/fileValidation.py
+src/smartfitness/main.py
+src/smartfitness/observation.py
+src/smartfitness/participant.py
+src/smartfitness/session.py
+src/smartfitness.egg-info/PKG-INFO
+src/smartfitness.egg-info/SOURCES.txt
+src/smartfitness.egg-info/dependency_links.txt
+src/smartfitness.egg-info/top_level.txt

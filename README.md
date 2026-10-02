@@ -1,5 +1,5 @@
 # Smart Fitness Session Analyzer
-Python Programming Assignment (I) Option A
+Python Programming Assignment (II) Option A
 Kyle Strother 
 Student Number: 416279
 
@@ -8,36 +8,26 @@ A fitness centre receives simulated measurements from wearable devices used duri
 program that organizes participants and exercise sessions, validates measurements, compares measurements with personal
 reference values, classifies session intensity and describes recovery after activity.
 
-The Program in this repository utilizes the instructor provided data generator to simulate measurements pertaining to:
-  - Reading Time Stamp
-  - Heart Rate
-  - Skin Response
-  - Skin Temperature
-  - Activity Level
-  - Sensor signal quality
-
-The program will prompt the user for their name, the duration of the exercise session, and then ask what type of activity they want simulated.
-Upon generation and placement into a *Observation* Object, the program will then validate this set to remove any unreliable data points and alert the user that a measurement has been removed from the set.
-these sets are then compiled into a *Session* Object which is then passed to an *Analyzer* Object that parses intenal data into the following statistics:
-  - Average Heart Rate
-  - Average Skin Response
-  - Average Temperature
-  - Max Heart Rate
-  - Min Heart Rate
-  - Session Type
-  - Data points validated over expected data points
-  - Session designation explanation
+The program package will accept command line arguments pointing towards Data files for both known participants, and session data. It will then validate the data and associate the session data to its related participant and run an analysis on each users session. This will display relevant statistics as well as categorize the session and provide an explanation why it was summarized as such. These analyses as well as explanations as to why any data may have been rejected will be output into user readable files that can be configured to point to a directory of the users choice.
 
 ## Project Structure
 4420Assignment1SmartFitness/<br>
-|-main.py<br>
-|-analyzer.py<br>
-|-data_generator.py <-Instructor provided class that can generate random seeded signal data <br>
-|-observation.py<br>
-|-participant.py<br>
-|-sample_data.py<br>
-|-session.py<br>
-|-plot_heart_rate.py   <- This is not to be considered in assessment it is simply a tool to visualize data matplotlib<br>
+SmartFitness/<br>
+├── data/<br>
+│   ├── participants.csv<br>
+│   └── fitness_sessions.csv<br>
+├── src/<br>
+│   └── smartfitness/<br>
+│       ├── \_\_init\_\_.py<br>
+│       ├── \_\_main\_\_.py<br>
+│       ├── main.py<br>
+│       ├── analyzer.py<br>
+│       ├── fileGeneration.py<br>
+│       ├── fileValidation.py<br>
+│       ├── observation.py<br>
+│       ├── participant.py<br>
+│       └── session.py<br>
+└── pyproject.toml<br>
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -45,12 +35,13 @@ these sets are then compiled into a *Session* Object which is then passed to an 
 The main entry point for the application.<br>
 
 Responsibilities:<br>
-&emsp;Collects the participant's name, duration, and scenario.<br>
-&emsp;Generates the appropriate sample data.<br>
-&emsp;Creates the required domain objects.<br>
+&emsp;Validate and pull in participants and session data files<br>
+&emsp;Make calls to FileValidation methods to ensure valid data is imported.<br>
+&emsp;Associates Session and Observation data with specific users.<br>
 &emsp;Calls the analyzer<br>
 
-The application is started by running `python3 ./main.py`<br>
+The application is started by running `py -m smartfitness --profiles <profile data source> --sessions <session data source> [--output <desired output directory](<- this is optional and without it it will default to output) `<br>
+Or `py -m smartfitness --profiles <profile data source> --sessions <session data source> [--output <desired output directory](<- this is optional and without it it will default to output) --overwrite`
 
 ### observation.py
 The data object that is responsible for housing the generated data.<br>
@@ -105,18 +96,25 @@ Responsibilities:<br>
 &emsp;Generates an explanation for the classification<br>
 &emsp;Prints the analysis results.<br>
 
-### sample_data.py
-This module provides helper functions for the different required assessment scenarios
+### fileGeneration.py
+This module is responsible for generation of output files.
 
-Examples:<br>
-&emsp;`generate_valid_resting_participant_data()`<br>
-&emsp;`generate_valid_recovery_participant_data()`<br>
-&emsp;`generate_valid_moderate_participant_data()`<br>
-&emsp;`generate_valid_high_participant_data()`<br>
-&emsp;`generate_poor_participant_data()`<br>
+Responsibilities:<br>
+&emsp;Given an Analysis summart it will output it to a file, either appending it to an existing file or generating a new one<br>
+&emsp;Generate a quick analysis line for csv format give an analysis summary dictionary<br>
+&emsp;Prints full user readable reports to an output file for all participants, and their session(s)<br>
+&emsp;Processes a participant's sessions.<br>
+&emsp;Reports why certain imported data may not have been accepted and where it lives<br>
 
-These functions are created to ease assessment of this assignment
+### fileValidation.py
+This module is responsible for loading and validating participant and session data
 
+Responsibilities:<br>
+&emsp;Processes a participants data file and catergorizes the data into valid and invalid input.<br>
+&emsp;Processes a Session data file and catergorizes the data into valid and invalid input.<br>
+&emsp;Validates the rows of a participants CSV file and either passes the row or rejects it and provides explanation as to why.<br>
+&emsp;Validates the rows of a session CSV file and either passes the row or rejects it and provides explanation as to why.<br>
+&emsp;Creates two custom exception calsses to handle when a data file is invalid<br>
 -----------------------------------------------------------------------------------------------------------------------
 
 ### Composition
@@ -142,13 +140,11 @@ These allowed me to implement my own behavior for the string representation that
 
 ## Assumptions
 The Program makes the following assumptions:
-  1. The time stamp values generated by instructor provided code is representative of minutes
+  1. The time stamp values is representative of minutes
   2. A session must last at least 1 minute with the understanding that the only sensor data collected could be faulty
   3. Heart Rate is measured in Beats per Minute (bpm)
   4. Lower value signal quality is less accurate
-  5. the sample data is set to use fixed seeded random generators for testing purposes
-  6. a Participant must enter a name
-  7. At this point there are only 5 scenarios (Resting, Moderate, High, Recovery, and Poor)
+  5. the session and participant data is provided by the user and data trend provided are realistic other wise the algorithm utilized to determine trends will be uneffective
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -166,6 +162,8 @@ This Program uses the following rules to determine a sessions classification:
   - Poor Quality:
     - If sensor values fall outside of accepted ranges or if the signal quality is below .19 causing more than 20% of the
       session's observations to be invalid. Once a Poor scenario is reached in the main application it does not proceed with analysis.
+  - Insufficient Data
+    - If the session data is incomplete and a session is only a single observation in length, it can not calculate trends effectively and classify the session
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -181,9 +179,13 @@ PreRequisites:
     - run `cd 4420Assignment1SmartFitness` in the same terminal window
   3. Verify Python
     - run `python3 --version` and verify you are running 3.10 or later
+  4. run `py -m venv .venv` 
+  5. run `.\.venv\Scripts\Activate.ps1`
+  6. run `py -m pip install -e .`
   4. Run the Application
-    - run either `python3 main.py` or `python main.py`
-  5. Follow the prompts given by the program
+    - run `py -m smartfitness --profiles <profile data source> --sessions <session data source> [--output <desired output directory](<- this is optional and without it it will default to output)`
+      - if You wish to overwrite all output already generated instead of appending (in the case of running the application with the same data files) append `--overwrite` to the above command
+  5. View output files in either a new `output` directory or whatever directory specified in the above command
      
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -194,8 +196,7 @@ PreRequisites:
 -----------------------------------------------------------------------------------------------------------------------
 
 ## Known Limitations
-  1. Due to the nature of the sensor data being randomly generated it is not indicative of real heart rate values and as such making a determination of the trend of the heart rate is very generic
-     and could lead to misclassification if random data points bounce around too much
-  2. I have increased the range that sensor signal quality can be generated at and as such the duration cam be off by a minute or two for longer session durations
+  1. At this time the program will only accept one set of session and participant data at once, to process multiple files the command must be run several times given new files.
+  2. Output to files is generic text and lacks beneficial graphs depicting trends and deviation from baseline values
      
 -----------------------------------------------------------------------------------------------------------------------

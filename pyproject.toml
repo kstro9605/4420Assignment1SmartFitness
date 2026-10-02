@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smartfitness-session-analyzer"
+version = "0.1.0"
+description = "Analyze Fitness Session Data From session file and associate them to participant entities imported from participant data file"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+smartfitness = "smartfitness.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

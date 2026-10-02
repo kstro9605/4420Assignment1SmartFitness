@@ -8,11 +8,10 @@ class Analyzer:
         baseline_skin = participant.baseline_skin_response
         baseline_temp = participant.baseline_temperature
 
-        sessionCount = 1
-        for session in participant.sessions:
+        for session_id, session in participant.sessions.items():
             session_analysis = dict()
-            session_analysis["session_number"] = sessionCount
-            sessionCount += 1
+            session_analysis["session_number"] = session_id
+            session_analysis["participant_id"] = participant.participant_id
             starting_observation = session.determine_starting_observation()
             ending_observation = session.determine_ending_observation()
             organized_observations = session.organize_observations_by_timestamp()
@@ -35,12 +34,14 @@ class Analyzer:
         return analysis_results
 
     def determine_session_type(self, observations, baseline_heart_rate):
+        if(len(observations) < 2):
+            return "Insufficient Data"
         heart_rates = [obs.heart_rate for obs in observations]
         average_heart_rate = sum(heart_rates) / len(heart_rates)
         activity_levels = [obs.activity_level for obs in observations]
         heart_rate_trend = self.__detect_trend(heart_rates)
         activity_level_trend = self.__detect_trend(activity_levels)
-    
+
         if heart_rate_trend == 1 or activity_level_trend == 1:
             match average_heart_rate:
                 # I am not a huge fan of this case but because the resting values for seed 42 are technically an increasing trend,
@@ -52,7 +53,7 @@ class Analyzer:
                     return "Moderate Activity"
                 case hr if hr > 110:
                     return "High Activity"
-        elif (heart_rate_trend == -1 or activity_level_trend == -1) and average_heart_rate > baseline_heart_rate:
+        elif (heart_rate_trend == -1 or activity_level_trend == -1) and average_heart_rate > baseline_heart_rate + 5:
             return "Recovery"
         elif average_heart_rate <= baseline_heart_rate + 15:
             return "Resting"
@@ -75,13 +76,14 @@ class Analyzer:
                 "this is an indication this session recorded a period of High activity"
             case "Recovery":
                 summary_string="Sensor data began with a period of elevated activity levels and heart rate, then over time" \
-                " These levels decreased approaching the participants base values. This indicates "
+                " These levels decreased approaching the participants base values. This indicates a Recovery Session was occuring "
+            case "Insufficient Data":
+                summary_string="Sensor data was not sufficient to determine a session classification. "
 
         return summary_string
 
-    ''' I believe this method of determining whether the median slope is increasing vs decreasing would work for Real life 
-        values but unfortunately due to the random generation of values used that go up and down much more erradically than a real heart rate
-        would this is an unreliable means of determining trends of this data
+    '''Keeping this as another attempted method to determine trend using the average slope between measured points
+    This did not work for assignment 2s P001 user's second session possibly misclassifying it as a recovery session 
     def __get_median(self, values):
         sorted_values = sorted(values)
         n = len(sorted_values)
@@ -99,11 +101,10 @@ class Analyzer:
             for j in range(i + 1, n):
                 slope = (data[j] - data[i]) / (j - i)
                 slopes.append(slope)
-
-        print(slopes)
                 
         # Taking the median to possibly overlook outliers.
         median_slope = self.__get_median(slopes)
+        print(sorted(slopes), median_slope)
 
         if median_slope > 0:
             return 1  #postive slope == increasing trend
@@ -112,6 +113,30 @@ class Analyzer:
         else:
             return 0  # No trend'''
 
+    #This trend detection method determines the slop of the regression trend line that could be applied to 
+    #this data set
+    def __detect_trend(self, data):
+        y_values = data
+        x_values = list(range(len(data)))
+
+        x_bar = sum(x_values) / len(x_values)
+        y_bar = sum(y_values) / len(y_values)
+
+        #Calculate terms for the slope formula m= ∑(x−x̄)(y−ȳ) / ∑(x−x̄)^2
+        numerator = sum((x - x_bar) * (y - y_bar) for x, y in zip(x_values, y_values))
+        denominator = sum((x - x_bar) ** 2 for x in x_values)
+
+        slope = numerator / denominator
+
+        if slope > 0:
+            return 1  #postive slope == increasing trend
+        elif slope < 0:
+            return -1  # negative slope == decreasing trend   
+        else:
+            return 0  # No trend'''
+
+
+    '''Best trend detection for random generated data sets
     def __detect_trend(self, data):
         half_data = len(data) // 2
         if half_data == 0:
@@ -128,10 +153,10 @@ class Analyzer:
         elif avg_first < avg_last:
             return 1
         else: 
-            return 0
+            return 0'''
 
 
-    def print_analysis_results(self, participant, analysis_results):
+    def print_to_console_analysis_results(self, participant, analysis_results):
         print(f"\nAnalysis results for participant: {participant.participant_id}:")
         print(f"Baseline Heart Rate: {participant.baseline_heart_rate} bpm")
         print(f"Baseline Skin Response: {participant.baseline_skin_response}")
@@ -146,6 +171,6 @@ class Analyzer:
             print(f"  Min Heart Rate: {session_analysis['min_heart_rate']} bpm")
             print(f"  Session Type: {session_analysis['session_type']}")
             print(f"  Sensor captured {session_analysis['valid_observations']} acceptable readings out of {session_analysis['duration']} expected")
-            print(f"\n  Session Summary: {session_analysis['session_summary']}")
+            print(f"  Session Summary: {session_analysis['session_summary']}\n")
     
       

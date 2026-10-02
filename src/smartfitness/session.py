@@ -1,12 +1,14 @@
-from observation import Observation
+from .observation import Observation
 
 class Session:
-    observations = []
     __classification = "invalid"
-    def __init__(self, observations):
+    def __init__(self, observations, session_id):
+        self.session_id = session_id
         number_of_observations = len(observations)
         valid_observations = []
-        
+        self.observations = []
+
+        print
         for observation in observations:
             try:
                 Observation.validate(observation)
@@ -47,7 +49,7 @@ class Session:
             return self.__classification     
             
     def __repr__(self):
-        return f"Session(observations={self.observations})"
+        return f"Session {self.session_id} (observations={self.observations})"
 
 class QualityError(Exception):
     pass

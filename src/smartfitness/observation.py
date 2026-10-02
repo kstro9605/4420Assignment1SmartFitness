@@ -2,12 +2,12 @@ class Observation:
     __observation_status = []
 
     def __init__(self, observation_data):
-        self.timestamp = observation_data["timestamp"]
-        self.heart_rate = observation_data["heart_rate"]
-        self.skin_response = observation_data["skin_response"]
-        self.temperature = observation_data["temperature"]
-        self.activity_level = observation_data["activity_level"]
-        self.signal_quality = observation_data["signal_quality"]
+        self.timestamp = int(observation_data["timestamp"])
+        self.heart_rate = int(observation_data["heart_rate"])
+        self.skin_response = float(observation_data["skin_response"])
+        self.temperature = float(observation_data["temperature"])
+        self.activity_level = float(observation_data["activity_level"])
+        self.signal_quality = float(observation_data["signal_quality"])
 
     def validate(self):
         if self.heart_rate is not None and (self.heart_rate < 35 or self.heart_rate > 205):
